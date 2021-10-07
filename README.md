@@ -14,7 +14,7 @@
         + [element-array-ephys](https://github.com/datajoint/element-array-ephys)
     + Please follow the steps listed below to begin working with the platform.
 
-+ Create a free account at [datajoint.io](accounts.datajoint.io)
++ Create a free account at [datajoint.io](https://accounts.datajoint.io)
     + Please email us after you create this account so we can ensure your 
     account is configured properly.
 
