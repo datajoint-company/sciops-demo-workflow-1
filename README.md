@@ -25,7 +25,7 @@
         https://filezilla-project.org/download.php?type=client)
     + Install Filezilla
     + Enter your credentials and press `Quickconnect`
-        + Host: `sciops-demo-v1-sftp.datajoint.io`
+        + Host: `upload.datajoint.io`
         + Username: <datajoint.io account username>
         + Password: <datajoint.io account password>
         + Port: 22
@@ -54,7 +54,7 @@
     cloud under the directory `inbox`.
 
 + Enter your experimental session metadata
-    + Log in to [DataJoint LabBook](https://sciops-demo-v1-labbook.datajoint.io/)
+    + Log in to [DataJoint LabBook](https://labbook.datajoint.io/)
         + Host: `tutorial-db.datajoint.io`
         + Username: <datajoint.io account username>
         + Password: <datajoint.io account password>
@@ -94,7 +94,7 @@
     + Once your dataset is processed, you will receive an email.
 
 + Data exploration and visualization
-    + Log in to the [DataJoint Jupyter environment](https://sciops-demo-v1-jupyter.datajoint.io/)
+    + Log in to the [DataJoint Jupyter environment](https://jupyter.datajoint.io/)
     + Navigate to the Jupyter notebook [01-explore](notebooks/01-explore.ipynb) 
     for examples on how to plot the processed data.
 
