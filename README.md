@@ -91,7 +91,9 @@
 + Kilosort processing
     + Now the workflow will trigger Kilosort 2.5 to analyze your dataset with 
     default parameters.
-    + Once your dataset is processed, you will receive an email.
+    + When your data is processed you will see an entry in the 
+    `ephys.CuratedClustering.Unit` and `ephys.WaveformSet` tables within 
+    DataJoint LabBook.
 
 + Data exploration and visualization
     + Log in to the [DataJoint Jupyter environment](https://jupyter.datajoint.io/)
@@ -99,6 +101,9 @@
     for examples on how to plot the processed data.
 
     ![explore notebook](images/explore.png)
+
++ Your processed data is stored within the `outbox` and can be downloaded with 
+Filezilla.
 
 + Please repeat the above steps to process additional datasets.
 
