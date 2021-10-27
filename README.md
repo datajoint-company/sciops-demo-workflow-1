@@ -1,9 +1,9 @@
 # Workflow for processing Neuropixels recordings with the Kilosort clustering method
 
-+ Welcome to the SciOps cloud-based platform
-    + This platform is designed for a user to upload their raw Neuropixels 
-    data acquired with SpikeGLX, which will then automatically be processed
-    with Kilosort 2.5.  The user can then use Jupyter notebooks to visualize the 
++ Welcome to the DataJoint SciOps Neuropixels Analysis service
+    + This service is designed for a user to upload their raw Neuropixels 
+    data acquired with SpikeGLX, which will then be automatically processed
+    with Kilosort 2.5.  The service provides online Jupyter notebooks to visualize the 
      results.
     + This 
     [workflow](https://github.com/ttngu207/sciops-demo-workflow-1)
@@ -14,8 +14,8 @@
         + [element-array-ephys](https://github.com/datajoint/element-array-ephys)
     + Please follow the steps listed below to begin working with the platform.
 
-+ Create a free account at [datajoint.io](https://accounts.datajoint.io)
-    + Please email us after you create this account so we can ensure your 
++ Create a free account at [https://accounts.datajoint.io](https://accounts.datajoint.io)
+    + Please email us at support@datajoint.com after you create this account so we can ensure your 
     account is configured properly.
 
     ![accounts](images/accounts.png)
