@@ -14,7 +14,7 @@
         + [element-array-ephys](https://github.com/datajoint/element-array-ephys)
     + Please follow the steps listed below to begin working with the platform.
 
-+ Create a free account at [datajoint.io](accounts.datajoint.io)
++ Create a free account at [datajoint.io](https://accounts.datajoint.io)
     + Please email us after you create this account so we can ensure your 
     account is configured properly.
 
@@ -25,7 +25,7 @@
         https://filezilla-project.org/download.php?type=client)
     + Install Filezilla
     + Enter your credentials and press `Quickconnect`
-        + Host: `sciops-demo-v1-sftp.datajoint.io`
+        + Host: `upload.datajoint.io`
         + Username: <datajoint.io account username>
         + Password: <datajoint.io account password>
         + Port: 22
@@ -54,7 +54,7 @@
     cloud under the directory `inbox`.
 
 + Enter your experimental session metadata
-    + Log in to [DataJoint LabBook](https://sciops-demo-v1-labbook.datajoint.io/)
+    + Log in to [DataJoint LabBook](https://labbook.datajoint.io/)
         + Host: `tutorial-db.datajoint.io`
         + Username: <datajoint.io account username>
         + Password: <datajoint.io account password>
@@ -91,14 +91,19 @@
 + Kilosort processing
     + Now the workflow will trigger Kilosort 2.5 to analyze your dataset with 
     default parameters.
-    + Once your dataset is processed, you will receive an email.
+    + When your data is processed you will see an entry in the 
+    `ephys.CuratedClustering.Unit` and `ephys.WaveformSet` tables within 
+    DataJoint LabBook.
 
 + Data exploration and visualization
-    + Log in to the [DataJoint Jupyter environment](https://sciops-demo-v1-jupyter.datajoint.io/)
+    + Log in to the [DataJoint Jupyter environment](https://jupyter.datajoint.io/)
     + Navigate to the Jupyter notebook [01-explore](notebooks/01-explore.ipynb) 
     for examples on how to plot the processed data.
 
     ![explore notebook](images/explore.png)
+
++ Your processed data is stored within the `outbox` and can be downloaded with 
+Filezilla.
 
 + Please repeat the above steps to process additional datasets.
 
