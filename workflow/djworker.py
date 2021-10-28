@@ -12,17 +12,19 @@ _populate_settings = {
     'suppress_errors': True}
 
 
-class WorkerLog(dj.Manual):
+class WorkerLog(dj.Table):
     definition = """
     # Registration of processing jobs running .populate() jobs (e.g. in process.py script)
     process_timestamp : datetime      # timestamp of the processing job
     process           : varchar(64)
     ---
-    worker_name=''    : varchar(255)  # Name of the worker
+    worker_name=''    : varchar(255)  # name of the worker
     host              : varchar(255)  # system hostname
     user=''           : varchar(255)  # database user
     pid=0             : int unsigned  # system process id  
     """
+
+    _table_name = '~WorkerLog'
 
     @classmethod
     def log_process_job(cls, process, worker_name='', db_prefix=''):
@@ -78,10 +80,10 @@ class DataJointWorker:
     A decorator class for running and managing the populate jobs
     """
 
-    def __init__(self, name, worker_schema_name, *,
+    def __init__(self, worker_name, worker_schema_name, *,
                  run_duration=-1, sleep_duration=60,
                  autoclear_error_patterns=[], db_prefix=''):
-        self.name = name
+        self.name = worker_name
         self._worker_schema = dj.schema(worker_schema_name)
         self._worker_schema(WorkerLog)
 
