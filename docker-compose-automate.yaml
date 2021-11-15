@@ -1,3 +1,4 @@
+# docker-compose up --build
 version: '2.4'
 services:
   matlab:
@@ -10,7 +11,8 @@ services:
         - PY_VERSION
         - MATLAB_INSTALLED_ROOT
     #image: raphaelguzman/matlab:${MATLAB_VERSION}-${MATLAB_IMAGE_TYPE}
-    image: drewyangdev/workflow_array_ephys:${MATLAB_VERSION}-${MATLAB_IMAGE_TYPE}
+    image: drewyangdev/workflow_array_ephys:${MATLAB_VERSION}-${MATLAB_IMAGE_TYPE}-pykilosort
+    runtime: nvidia
     environment:
       - DISPLAY # only necessary for GUI image
       - MATLAB_LICENSE # Must specify MATLAB_LICENSE variable or license file volume mount
@@ -39,12 +41,12 @@ services:
     #user: ${MATLAB_UID}:${MATLAB_GID}
     volumes:
       #- /tmp/.X11-unix:/tmp/.X11-unix:rw # only necessary for GUI image
-      # - ./licenses/${MATLAB_VERSION}_joseph_license.lic:/home/muser/license_${MATLAB_VERSION}.lic:ro # Must specify MATLAB_LICENSE variable or license file volume mount
+      #- ./licenses/${MATLAB_VERSION}_joseph_license.lic:/home/muser/license_${MATLAB_VERSION}.lic:ro # Must specify MATLAB_LICENSE variable or license file volume mount
       - /home/ubuntu/neuropixel/matlab-docker/matlab/licenses/${MATLAB_VERSION}_joseph_license.lic:/home/muser/.MATLAB/licenses/license_${MATLAB_VERSION}.lic:ro # Must specify MATLAB_LICENSE variable or license file volume mount
       - /home/ubuntu/neuropixel/data_for_ecephys:/home/muser/neuropixel/data_for_ecephys
       - ${ROOT_DATA_DIR}:/home/${MATLAB_USER}/workflow_root_data
       - ${PROCESSED_DATA_DIR}:/home/${MATLAB_USER}/workflow_processed_data
-      - ./apt_requirements.txt:/tmp/apt_requirements.txt
+      #- ./apt_requirements.txt:/tmp/apt_requirements.txt
     mac_address: $MATLAB_HOSTID
     scale: ${WORKER_COUNT:-1}
     command:
@@ -53,5 +55,4 @@ services:
       - |
         cd /home/muser/neuropixel/Kilosort-3.0/CUDA && matlab -r "mexGPUall;quit" &&
         cd /home/muser/neuropixel/Kilosort-2.5/CUDA && matlab -r "mexGPUall;quit" &&
-        cd /home/muser/neuropixel/sciops-demo-workflow-1 && python workflow/process.py &
-        tail -f /dev/null
+        cd /home/muser/neuropixel/sciops-demo-workflow-1 && python workflow/process.py
