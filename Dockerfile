@@ -24,8 +24,11 @@ ENV PATH /home/muser/.MATLAB/bin:${PATH}
 RUN groupadd ubuntu --gid 1000
 RUN usermod -aG ubuntu muser
 
+RUN groupadd anaconda --gid 999
+RUN usermod -aG anaconda muser
+
 # mkdir for everything
-USER muser
+USER muser:anaconda
 RUN mkdir /home/muser/neuropixel
 WORKDIR /home/muser/neuropixel
 
