@@ -1,4 +1,3 @@
 locales-all
 vim
 wget
-curl
