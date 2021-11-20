@@ -29,7 +29,7 @@ _default_settings = {
     'suppress_errors': True}
 
 
-def run(run_duration=3600*3, sleep_duration=10):
+def run(run_duration=-1, sleep_duration=10):
 
     start_time = time.time()
     while ((time.time() - start_time < run_duration)
