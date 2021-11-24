@@ -68,7 +68,7 @@ WORKDIR /home/muser/neuropixel
 RUN git clone https://github.com/MouseLand/pykilosort.git
 RUN pip install cupy-cuda110
 # pip install packages that requires cuda build, will be enable in docker run --gpu or docker-compose.yaml runtime: nvidia
-RUN sed -i 's/cupy/cupy-cuda110/' /home/muser/neuropixel/pykilosort/requirements.txt && \
+RUN sed -i 's/cupy/cupy-cuda110==8.*/' /home/muser/neuropixel/pykilosort/requirements.txt && \
         pip install -r /home/muser/neuropixel/pykilosort/requirements.txt && \
         pip install phylib pyqtgraph pyqt5 && \
         pip install /home/muser/neuropixel/pykilosort/
@@ -76,6 +76,7 @@ RUN sed -i 's/cupy/cupy-cuda110/' /home/muser/neuropixel/pykilosort/requirements
 # npy_matlab
 RUN git clone https://github.com/kwikteam/npy-matlab.git
 
+ARG CACHE_AT=$(date)
 # ecephys_spike_sorting
 RUN git clone https://github.com/ttngu207/ecephys_spike_sorting.git
 #RUN pip install ./ecephys_spike_sorting/

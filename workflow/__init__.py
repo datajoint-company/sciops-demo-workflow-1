@@ -1,3 +1,4 @@
+import matlab.engine
 import os
 import datajoint as dj
 
