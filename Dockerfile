@@ -19,6 +19,18 @@ ENV LD_LIBRARY_PATH /usr/local/cuda-11.0/lib64:${LD_LIBRARY_PATH}
 RUN cd /home/muser/.MATLAB/extern/engines/python && python setup.py install
 RUN apt-get install -y tk
 ENV PATH /home/muser/.MATLAB/bin:${PATH}
+# Fix: libcrypto.so.1.1: version `OPENSSL_1_1_1' not found
+WORKDIR /tmp
+RUN wget https://www.openssl.org/source/openssl-1.1.1g.tar.gz
+RUN tar -zxf openssl-1.1.1g.tar.gz
+WORKDIR /tmp/openssl-1.1.1g
+RUN ./config && make && make install
+RUN mv /usr/bin/openssl /tmp/ && ln -s /usr/local/bin/openssl /usr/bin/openssl
+WORKDIR /
+# Fix: libstdc++.so.6: version `CXXABI_1.3.11' not found
+RUN cp /home/muser/.MATLAB/sys/os/glnxa64/libstdc++.so.6.0.25 /usr/lib/x86_64-linux-gnu/
+RUN rm /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+RUN ln -s /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25 /usr/lib/x86_64-linux-gnu/libstdc++.so.6
 
 # Mounted Data Volume Permission
 RUN groupadd ubuntu --gid 1000
