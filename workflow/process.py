@@ -1,67 +1,100 @@
+import sys
 import time
 import logging
-from workflow.pipeline import session, ephys
+from datajoint_utilities.dj_worker import WorkerLog, DataJointWorker, parse_args
 
-logger = logging.getLogger(__name__)
-logger.setLevel('INFO')
-
-
-_generic_errors = ["%Deadlock%", "%DuplicateError%", "%Lock wait timeout%",
-                   "%MaxRetryError%", "%KeyboardInterrupt%",
-                   "InternalError: (1205%", "%SIGTERM%"]
+from workflow.pipeline import session, ephys, db_prefix
 
 
-def _clean_up():
-    (ephys.schema.jobs & 'status = "error"'
-     & [f'error_message LIKE "{e}"'
-        for e in _generic_errors + ['%FileNotFound%']]).delete()
+_logger = logging.getLogger(__name__)
+_logger.setLevel('INFO')
 
 
-_tables = ((ephys.EphysRecording, {'max_calls': 10}),
-           (ephys.Clustering, {'max_calls': 5}),
-           (ephys.CuratedClustering, {'max_calls': 10}),
-           (ephys.LFP, {'max_calls': 1}),
-           (ephys.WaveformSet, {'max_calls': 1}))
-
-_default_settings = {
-    'display_progress': True,
-    'reserve_jobs': True,
-    'suppress_errors': True}
+def auto_generate_probe_insertions():
+    for skey in (session.Session - ephys.ProbeInsertion).fetch('KEY', limit=10):
+        try:
+            ephys.ProbeInsertion.auto_generate_entries(skey)
+        except FileNotFoundError as e:
+            _logger.debug(str(e))
+        except Exception as e:
+            _logger.error(str(e))
 
 
-def run(run_duration=-1, sleep_duration=10):
+def auto_generate_clustering_tasks():
+    for rkey in (ephys.EphysRecording - ephys.ClusteringTask).fetch('KEY', limit=10):
+        try:
+            ephys.ClusteringTask.auto_generate_entries(rkey)
+        except FileNotFoundError as e:
+            _logger.debug(str(e))
+        except Exception as e:
+            _logger.error(str(e))
 
-    start_time = time.time()
-    while ((time.time() - start_time < run_duration)
-           or (run_duration is None)
-           or (run_duration < 0)):
 
-        # auto-generate entries for ProbeInsertion
-        for skey in (session.Session - ephys.ProbeInsertion).fetch('KEY', limit=10):
-            try:
-                ephys.ProbeInsertion.auto_generate_entries(skey)
-            except FileNotFoundError as e:
-                logger.debug(str(e))
-            except Exception as e:
-                logger.error(str(e))
+# -------- Define worker(s) --------
+worker_schema_name = db_prefix + "workerlog"
+autoclear_error_patterns = ['%FileNotFound%']
 
-        # auto-generate entries for ClusteringTask
-        for rkey in (ephys.EphysRecording - ephys.ClusteringTask).fetch('KEY', limit=10):
-            try:
-                ephys.ClusteringTask.auto_generate_entries(rkey)
-            except FileNotFoundError as e:
-                logger.debug(str(e))
-            except Exception as e:
-                logger.error(str(e))
+# standard worker for non-GPU jobs
+standard_worker = DataJointWorker('standard_worker',
+                                  worker_schema_name,
+                                  db_prefix=db_prefix,
+                                  run_duration=1,
+                                  sleep_duration=10,
+                                  autoclear_error_patterns=autoclear_error_patterns)
 
-        # populate all ephys tables
-        for table, populate_settings in _tables:
-            logger.info(f'------------- {table.__name__} ---------------')
-            table.populate(**{**_default_settings, **populate_settings})
+standard_worker(auto_generate_probe_insertions)
+standard_worker(ephys.EphysRecording, max_calls=10)
+standard_worker(auto_generate_clustering_tasks)
+standard_worker(ephys.Clustering, max_calls=5)
+standard_worker(ephys.CuratedClustering, max_calls=10)
+standard_worker(ephys.LFP, max_calls=1)
+standard_worker(ephys.WaveformSet, max_calls=1)
 
-        _clean_up()
-        time.sleep(sleep_duration)
+# spike_sorting worker for GPU required jobs
+
+spike_sorting_worker = DataJointWorker('spike_sorting_worker',
+                                       worker_schema_name,
+                                       db_prefix=db_prefix,
+                                       run_duration=1,
+                                       sleep_duration=10,
+                                       autoclear_error_patterns=autoclear_error_patterns)
+
+standard_worker(ephys.Clustering, max_calls=5)
+
+
+# -------- Run worker(s) --------
+configured_workers = {
+    'standard_worker': standard_worker,
+    'spike_sorting_worker': spike_sorting_worker
+}
+
+
+def run(**kwargs):
+    worker = configured_workers[kwargs["worker_name"]]
+    worker._run_duration = kwargs["duration"]
+    worker._sleep_duration = kwargs["sleep"]
+
+    try:
+        worker.run()
+    except Exception:
+        _logger.exception(
+            "Worker '{}' encountered an exception:".format(kwargs["worker_name"])
+        )
+
+
+def cli():
+    """
+    Calls :func:`run` passing the CLI arguments extracted from `sys.argv`
+
+    This function can be used as entry point to create console scripts with setuptools.
+    """
+    args = parse_args(sys.argv[1:])
+    run(
+        priority=args.priority,
+        duration=args.duration,
+        sleep=args.sleep
+    )
 
 
 if __name__ == '__main__':
-    run()
+    cli()

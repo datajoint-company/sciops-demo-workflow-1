@@ -4,4 +4,5 @@ element-animal @ git+https://github.com/ttngu207/element-animal.git
 element-session @ git+https://github.com/ttngu207/element-session.git@datetime
 element-array-ephys @ git+https://github.com/ttngu207/element-array-ephys.git@no-curation
 ecephys-spike-sorting @ git+https://github.com/ttngu207/ecephys_spike_sorting.git
+datajoint-utilities @ git+https://github.com/ttngu207/datajoint-utilities.git
 ipykernel
