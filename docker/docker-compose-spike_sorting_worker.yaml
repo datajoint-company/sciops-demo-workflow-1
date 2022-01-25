@@ -4,7 +4,7 @@ services:
   autopopulate:
     build: # only necessary if rebuilding image
       context: ..
-      dockerfile: Dockerfile
+      dockerfile: matlab.Dockerfile
       args:
         - MATLAB_VERSION
         - MATLAB_FILE_KEY
