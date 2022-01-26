@@ -59,7 +59,7 @@ spike_sorting_worker = DataJointWorker('spike_sorting_worker',
                                        sleep_duration=10,
                                        autoclear_error_patterns=autoclear_error_patterns)
 
-standard_worker(ephys.Clustering, max_calls=5)
+spike_sorting_worker(ephys.Clustering, max_calls=5)
 
 
 # -------- Run worker(s) --------
