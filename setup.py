@@ -32,4 +32,7 @@ setup(
     keywords='neuroscience datajoint ephys',
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires=requirements,
+    entry_points={
+        'console_scripts': ['run_workflow=workflow.process:cli'],
+    }
 )
